@@ -1,0 +1,67 @@
+#include <iostream>
+#include <vector>
+
+void Partition(std::vector<int>& vec, int left, int right, int& id1, int& id2) {
+  id1 = left - 1;
+  id2 = right;
+  int p_id = left - 1;
+  int q_num = right;
+  int pivot = vec[right];
+  while (true) {
+    while (vec[++id1] < pivot) {
+      ;
+    }
+    while (pivot < vec[--id2]) {
+      if (id2 == left) {
+        break;
+      }
+    }
+    if (id1 >= id2) {
+      break;
+    }
+    std::swap(vec[id1], vec[id2]);
+    if (vec[id1] == pivot) {
+      p_id++;
+      std::swap(vec[p_id], vec[id1]);
+    }
+    if (vec[id2] == pivot) {
+      q_num--;
+      std::swap(vec[id2], vec[q_num]);
+    }
+  }
+  std::swap(vec[id1], vec[right]);
+  id2 = id1 - 1;
+  for (int k = left; k < p_id; k++, id2--) {
+    std::swap(vec[k], vec[id2]);
+  }
+  id1++;
+  for (int k = right - 1; k > q_num; k--, id1++) {
+    std::swap(vec[id1], vec[k]);
+  }
+}
+void QuickSort(std::vector<int>& vec, int left, int right) {
+  if (right <= left) {
+    return;
+  }
+  int id1;
+  int id2;
+  Partition(vec, left, right, id1, id2);
+  QuickSort(vec, left, id2);
+  QuickSort(vec, id1, right);
+}
+
+int main() {
+  int num;
+  int x_num;
+  std::cin >> num;
+  std::vector<int> vec;
+  for (int i = 0; i < num; i++) {
+    std::cin >> x_num;
+    vec.push_back(x_num);
+  }
+  QuickSort(vec, 0, num - 1);
+  for (int i = 0; i < num; i++) {
+    std::cout << vec[i] << " ";
+  }
+  return 0;
+}
