@@ -1,0 +1,33 @@
+#include <iostream>
+#include <vector>
+
+const int kNum1 = 8;
+const int kNum2 = 256;
+signed main() {
+  int num;
+  std::cin >> num;
+  std::vector<int64_t> nums(num + 1);
+  for (int i = 1; i <= num; ++i) {
+    std::cin >> nums[i];
+  }
+  std::vector<int> cnt(kNum2, 0);
+  for (int j = 0; j < kNum1; ++j) {
+    for (int i = 1; i <= num; ++i) {
+      int byte_num = *((unsigned char*)&nums[i] + j);
+      cnt[byte_num]++;
+    }
+    for (int i = 1; i < kNum2; ++i) {
+      cnt[i] += cnt[i - 1];
+    }
+    std::vector<int64_t> cur(num + 1, 0);
+    for (int i = num; i >= 1; --i) {
+      int byte_num = *((unsigned char*)&nums[i] + j);
+      cur[cnt[byte_num]--] = nums[i];
+    }
+    std::swap(nums, cur);
+    cnt.assign(kNum2, 0);
+  }
+  for (int i = 1; i < num + 1; ++i) {
+    std::cout << nums[i] << '\n';
+  }
+}
